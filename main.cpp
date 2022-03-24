@@ -10,16 +10,12 @@ enum class WordType {
 struct WordPart {
     char letter;
     WordType type;
+
+    bool won = false;
 };
 
-struct Intent {
-    bool win;
-    WordPart parts[5];
-};
-
-Intent testWord(string intent, string realWord);
-
-void printIntent(Intent intent);
+WordPart* testWord(WordPart* parts, string intent, string realWord);
+void printIntent(WordPart* intents);
 
 int main() {
     int intents = 0;
@@ -32,10 +28,13 @@ int main() {
         intents++;
 
         cin >> current;
-        Intent currentIntent = testWord(current, "exito");
-        win = currentIntent.win;
 
-        printIntent(currentIntent);
+        WordPart parts[5];
+        WordPart *currentIntent = testWord(parts, current, "exito");
+
+        win = currentIntent[0].won;
+
+        printIntent(parts);
 
         if (win) {
             break;
@@ -51,14 +50,16 @@ int main() {
     return 0;
 }
 
-void printIntent(Intent intent) {
-    for (WordPart part : intent.parts) {
+void printIntent(WordPart* parts) {
+    for (int i = 0; i < 5; ++i) {
+        WordPart part = parts[i];
+
         if (part.type == WordType::CORRECT) {
-            cout << "&a";
+            system("Color 0A");
         } else if (part.type == WordType::BAD_POSITION) {
-            cout << "&b";
+            system("Color E4");
         } else {
-            cout << "&c";
+            system("Color 7E");
         }
 
         cout << part.letter;
@@ -67,13 +68,9 @@ void printIntent(Intent intent) {
     cout << endl;
 }
 
-Intent testWord(string intent, string realWord) {
-    WordPart parts[5];
-
+WordPart* testWord(WordPart* parts, string intent, string realWord) {
     char intentArray[intent.length()];
     strcpy(intentArray, intent.c_str());
-
-    Intent intentData = {false, *parts};
 
     if (intent == realWord) {
         for (int i = 0; i < sizeof intentArray; i++) {
@@ -82,8 +79,8 @@ Intent testWord(string intent, string realWord) {
             parts[i] = {letter, WordType::CORRECT};
         }
 
-        intentData.win = true;
-        return intentData;
+        parts[0].won = true;
+        return parts;
     }
 
     char sortedRealWord[realWord.length()];
@@ -102,6 +99,6 @@ Intent testWord(string intent, string realWord) {
         }
     }
 
-    return intentData;
+    return parts;
 }
 
