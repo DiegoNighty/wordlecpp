@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <algorithm>
 
 using namespace std;
 
@@ -80,7 +81,11 @@ WordPart* testWord(WordPart* parts, string intent, string realWord) {
         for (int i = 0; i < sizeof intentArray; i++) {
             char letter = intentArray[i];
 
-            parts[i] = {letter, WordType::CORRECT};
+            WordPart part = *new WordPart();
+            part.letter = letter;
+            part.type = WordType::CORRECT;
+
+            parts[i] = part;
         }
 
         parts[0].won = true;
@@ -94,15 +99,19 @@ WordPart* testWord(WordPart* parts, string intent, string realWord) {
     for (int i = 0; i < sizeof intentArray; i++) {
         char letter = intentArray[i];
 
+        WordPart part = *new WordPart();
+        part.letter = letter;
+
         if (realWord[i] == letter) {
-            parts[i] = {letter, WordType::CORRECT};
+            part.type = WordType::CORRECT;
         } else if (binary_search(sortedRealWord, sortedRealWord + realWord.size(), letter)) {
-            parts[i] = {letter, WordType::BAD_POSITION};
+            part.type = WordType::BAD_POSITION;
         } else {
-            parts[i] = {letter, WordType::INCORRECT};
+            part.type = WordType::INCORRECT;
         }
+
+        parts[i] = part;
     }
 
     return parts;
 }
-
