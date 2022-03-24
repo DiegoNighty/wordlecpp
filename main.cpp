@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -7,11 +8,13 @@ enum class WordType {
 };
 
 struct WordPart {
-    char letter; WordType type;
+    char letter;
+    WordType type;
 };
 
 struct Intent {
-    bool win; WordPart parts[5];
+    bool win;
+    WordPart parts[5];
 };
 
 Intent testWord(string intent, string realWord);
@@ -29,7 +32,7 @@ int main() {
         intents++;
 
         cin >> current;
-        Intent currentIntent = testWord(current, "hola");
+        Intent currentIntent = testWord(current, "exito");
         win = currentIntent.win;
 
         printIntent(currentIntent);
@@ -49,46 +52,46 @@ int main() {
 }
 
 void printIntent(Intent intent) {
-    for (WordPart item : intent.parts) {
-        if (item.type == WordType::CORRECT) {
-            system("Color 0A");
-        } else if (item.type == WordType::BAD_POSITION) {
-            system("Color E4");
+    for (WordPart part : intent.parts) {
+        if (part.type == WordType::CORRECT) {
+            cout << "&a";
+        } else if (part.type == WordType::BAD_POSITION) {
+            cout << "&b";
         } else {
-            system("Color 7E");
+            cout << "&c";
         }
 
-        cout << item.letter;
+        cout << part.letter;
     }
 
     cout << endl;
 }
 
-void toArr(string str, char arr[]) {
-    for (int i = 0; i < str.size(); i++) {
-        arr[i] = str[i];
-    }
-}
-
 Intent testWord(string intent, string realWord) {
     WordPart parts[5];
 
+    char intentArray[intent.length()];
+    strcpy(intentArray, intent.c_str());
+
+    Intent intentData = {false, *parts};
+
     if (intent == realWord) {
-        for (int i = 0; i < intent.length(); i++) {
-            char letter = intent[i];
+        for (int i = 0; i < sizeof intentArray; i++) {
+            char letter = intentArray[i];
 
             parts[i] = {letter, WordType::CORRECT};
         }
 
-        return {true, *parts};
+        intentData.win = true;
+        return intentData;
     }
 
     char sortedRealWord[realWord.length()];
-    toArr(realWord, sortedRealWord);
+    strcpy(sortedRealWord, realWord.c_str());
     sort(sortedRealWord, sortedRealWord + realWord.size());
 
-    for (int i = 0; i < intent.length(); i++) {
-        char letter = intent[i];
+    for (int i = 0; i < sizeof intentArray; i++) {
+        char letter = intentArray[i];
 
         if (realWord[i] == letter) {
             parts[i] = {letter, WordType::CORRECT};
@@ -99,6 +102,6 @@ Intent testWord(string intent, string realWord) {
         }
     }
 
-    return {false, *parts};
+    return intentData;
 }
 
