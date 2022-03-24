@@ -22,12 +22,18 @@ int main() {
     bool win;
     string current;
 
+    cout << "INSTRUCCIONES: si la letra esta encerrada en [] es porque esta correcta, <> si esta en una mala posicion, () si no esta en la palabra" << endl;
     cout << "Introduce la palabra (de 5 letras): " << endl;
 
     while (intents < 5) {
         intents++;
 
         cin >> current;
+
+        while (current.length() != 5) {
+            cout << "Introduce 5 letras exactas!" << endl;
+            cin >> current;
+        }
 
         WordPart parts[5];
         WordPart *currentIntent = testWord(parts, current, "exito");
@@ -55,14 +61,12 @@ void printIntent(WordPart* parts) {
         WordPart part = parts[i];
 
         if (part.type == WordType::CORRECT) {
-            system("Color 0A");
+            cout << "[" << part.letter << "]";
         } else if (part.type == WordType::BAD_POSITION) {
-            system("Color E4");
+            cout << "<" << part.letter << ">";
         } else {
-            system("Color 7E");
+            cout << "(" << part.letter << ")";
         }
-
-        cout << part.letter;
     }
 
     cout << endl;
