@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstring>
 
 using namespace std;
 
@@ -8,18 +7,61 @@ enum class WordType {
 };
 
 struct WordPart {
-    char letter;
-    WordType type;
+    char letter; WordType type;
 };
 
 struct Intent {
-    bool win;
-    WordPart parts[5];
+    bool win; WordPart parts[5];
 };
 
+Intent testWord(string intent, string realWord);
+
+void printIntent(Intent intent);
+
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    int intents = 0;
+    bool win;
+    string current;
+
+    cout << "Introduce la palabra (de 5 letras): " << endl;
+
+    while (intents < 5) {
+        intents++;
+
+        cin >> current;
+        Intent currentIntent = testWord(current, "hola");
+        win = currentIntent.win;
+
+        printIntent(currentIntent);
+
+        if (win) {
+            break;
+        }
+    }
+
+    if (win) {
+        cout << "Has ganado con " << intents << " intentos!";
+    } else {
+        cout << "Perdiste :v";
+    }
+
     return 0;
+}
+
+void printIntent(Intent intent) {
+    for (WordPart item : intent.parts) {
+        if (item.type == WordType::CORRECT) {
+            system("Color 0A");
+        } else if (item.type == WordType::BAD_POSITION) {
+            system("Color E4");
+        } else {
+            system("Color 7E");
+        }
+
+        cout << item.letter;
+    }
+
+    cout << endl;
 }
 
 void toArr(string str, char arr[]) {
